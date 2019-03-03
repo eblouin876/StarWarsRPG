@@ -10,9 +10,10 @@ class Character {
         this.player = false;
         this.alive = true;
     }
-    makeCard(locationDiv, sceneName) {
+    makeCard(sceneName) {
         let id = this.name.replace(/\s+/g, '');
         id = id.toLowerCase();
+        var locationDiv = $(`#${sceneName}`)
         locationDiv.append(`<div class="card" style="width: 18rem; float: left; margin: 1rem;" id="${id}-card-${sceneName}"></div>`);
         let newCard = $(`#${id}-card-${sceneName}`);
         newCard.append(`<img src="${this.picture}" class="card-img-top" alt="${this.name}" id="${id}-image-${sceneName}">`);
@@ -20,7 +21,7 @@ class Character {
         let cardBody = $(`#${id}-card-body-${sceneName}`);
         cardBody.append(`<h5 class="card-title" style="font-size: 1.5rem;">${this.name}</h5>`);
         cardBody.append(`<h3 class="card-title d-none" id="${id}-card-hp-${sceneName}">Health: ${this.hp}</h3>`);
-        cardBody.append(`<p class="card-text" style="margin: 1rem;">${this.story}</p>`);
+        cardBody.append(`<p class="card-text d-none d-md-block" style="margin: 1rem;">${this.story}</p>`);
         cardBody.append(`<button type="button" class="btn btn-danger" id="${id}-card-button-${sceneName}" onclick="game.chooseCharacter('${this.name}')">Play as ${this.name}</button>`);
     }
 }
@@ -35,49 +36,60 @@ class StarWarsRPG {
         this.player;
         this.opponents = [];
         this.currentOpponent;
-        this.scene = $("#start-scene");
-        this.setScene(this.scene);
-
+        this.scene;
+        this.newGame();
 
     }
 
-
-    // Changes what is displayed in the window
-    changeVisual(scene) {
-        $("#start-scene").addClass("d-none");
-        $("#choose-character-scene").addClass("d-none");
-        $("#choose-opponent-scene").addClass("d-none");
-        $("#fight-scene").addClass("d-none");
-        $("#win-lose-scene").addClass("d-none");
-        scene.removeClass("d-none");
-    }
-
-    resetScenes() {
-        $("#choose-character-scene").empty();
-        $("#choose-opponent-scene").empty();
-        $("#fight-scene").empty();
-        $("#win-lose-scene").empty();
-    }
 
     // Initiates the scene
-    setScene(sceneID, sceneName) {
-        this.scene = sceneID;
-        this.resetScenes();
-        this.changeVisual(this.scene);
-        var startScene = $("#start-scene");
-        var chooseCharScene = $("#choose-character-scene");
-        var chooseOppScene = $("#choose-opponent-scene");
-        var fightScene = $("#fight-scene");
-        var winLoseScene = $("#win-lose-scene");
+    setScene(sceneName) {
+        $('body').empty();
+        $('body').append(`<div class='container'><div class='row'><div class="col-12" id="${sceneName}"></div></div></div>`);
+        this.scene = $(`#${sceneName}`);
+
+        // Set sthe stat scene
+        if (sceneName === "start-scene") {
+            $('body').removeAttr("class", "fight")
+            $('body').removeAttr("class", "stars")
+            this.scene.append("<h1 class='play-text'>Click here to begin</h1>")
+            this.scene.on('click', function () {
+                game.setScene("intro-scene")
+            })
+        }
+
+        // Set the intro scene
+        if (sceneName === "intro-scene") {
+            $('body').attr("class", "stars")
+            this.scene.append(`<p class="scroll-text" id="${sceneName}-text">Welcome to the game. Instructions and story go here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin fringilla finibus lobortis. Vestibulum gravida nibh eget ante euismod gravida. Morbi at nibh volutpat, vulputate felis ut, maximus ipsum. Mauris lorem diam, ullamcorper et purus a, accumsan feugiat lacus. Sed et nunc venenatis turpis consectetur hendrerit ac ac augue. Suspendisse ornare risus ut mollis iaculis. Praesent ultricies sodales ante. Vivamus sem diam, consequat vitae lorem eu, fringilla pretium nibh.
+
+            In scelerisque, nulla non egestas euismod, magna tellus condimentum lorem, nec blandit sem mauris et metus. Proin eu tempor odio, sed molestie lacus. Donec nec lacus sit amet justo finibus sagittis aliquam sed lorem. Nunc dui neque, cursus ac orci ut, fringilla mollis dolor. Pellentesque interdum iaculis lectus, eu rhoncus lacus mattis sed. Nullam sed lacinia lacus. Pellentesque vel ligula vitae tellus porta dignissim. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+            
+            Praesent elit felis, luctus at cursus eget, maximus id elit. Nunc a finibus sem, a pharetra libero. Sed viverra a sem a blandit. Donec nec sapien congue, egestas tellus eu, tristique tortor. Proin at erat quam. Curabitur laoreet sodales magna, non cursus enim sagittis quis. Nam bibendum ligula non pulvinar rhoncus. Maecenas sagittis consequat nisl ut ultricies.
+            
+            </p>`)
+            $('body').append(`<audio id="theme"><source src="../sounds/theme.ogg" type="audio/ogg"></audio>`)
+            $("#theme")[0].play()
+            $(`#${sceneName}-text`).animate({
+                bottom: 0
+            }, 15000, function () {
+                game.setScene("choose-character-scene")
+            })
+
+        }
         // Set the scene to choose a character
-        if (sceneID[0] === chooseCharScene[0]) {
+        if (sceneName === "choose-character-scene") {
+            $('body').attr("class", "stars")
             for (let i = 0; i < this.characters.length; i++) {
-                this.characters[i].makeCard(sceneID, sceneName);
+                $(`#${sceneName}`).append(`<div class='row'><div class='col-12' id='${sceneName}'></div></div>`)
+                this.characters[i].makeCard(sceneName);
             }
         }
 
+
         // Set the scene to choose an opponent
-        if (sceneID[0] === chooseOppScene[0]) {
+        if (sceneName === "choose-opponent-scene") {
+            $('body').attr("class", "stars")
             let livingEnemies = [];
             this.opponents.forEach(function (opponent) {
                 if (opponent.alive === true) {
@@ -87,7 +99,7 @@ class StarWarsRPG {
             if (livingEnemies.length > 0) {
                 for (let i = 0; i < this.opponents.length; i++) {
                     if (this.opponents[i].alive === true) {
-                        this.opponents[i].makeCard(sceneID, sceneName);
+                        this.opponents[i].makeCard(sceneName);
                         let opponentID = this.opponents[i].name.replace(/\s+/g, '').toLowerCase();
                         $(`#${opponentID}-card-button-${sceneName}`).text("Fight");
                     }
@@ -98,9 +110,11 @@ class StarWarsRPG {
         }
 
         // Set the scene to fight
-        if (sceneID[0] === fightScene[0]) {
-            this.player.makeCard(sceneID, sceneName);
-            this.currentOpponent.makeCard(sceneID, sceneName);
+        if (sceneName === "fight-scene") {
+            $('body').removeAttr("class", "stars")
+            $('body').attr("class", "fight")
+            this.currentOpponent.makeCard(sceneName);
+            this.player.makeCard(sceneName);
             let playerID = this.player.name.replace(/\s+/g, '').toLowerCase();
             let opponentID = this.currentOpponent.name.replace(/\s+/g, '').toLowerCase();
             $(`#${playerID}-card-button-${sceneName}`).attr('class', 'd-none');
@@ -111,7 +125,9 @@ class StarWarsRPG {
         }
 
         // Set the sceen to win/lose
-        if (sceneID[0] === winLoseScene[0]) {
+        if (sceneName === "win-lose-scene") {
+            $('body').removeAttr("class", "fight")
+            $('body').removeAttr("class", "stars")
             if (this.player.alive === true) {
                 // Display victory video
                 alert("victory video");
@@ -119,9 +135,9 @@ class StarWarsRPG {
                 // Display loss video
                 alert("loss video");
             }
-            winLoseScene.append(`<h1>Press Y to play again<h1>`)
+            $(`#${sceneName}`).append(`<h1 class="play-text">Press N for new game<h1>`)
             $(document).on("keyup", function (event) {
-                if (event.key.toLowerCase() === "y") {
+                if (event.key.toLowerCase() === "n") {
                     // Have to refer to it as game because that's what the DOM sees
                     game.newGame()
                 }
@@ -129,11 +145,10 @@ class StarWarsRPG {
         }
     }
 
+    // Handles picking a character, both in the choose character and choose opponent
     chooseCharacter(name) {
         // Choose a character to play
-        let chooseCharacterScene = $("#choose-character-scene");
-        let chooseOpponentScene = $("#choose-opponent-scene");
-        if (this.scene[0] === chooseCharacterScene[0]) {
+        if (this.scene[0] === $("#choose-character-scene")[0]) {
             for (let i = 0; i < this.characters.length; i++) {
                 if (name === this.characters[i].name) {
                     this.player = this.characters[i];
@@ -145,18 +160,19 @@ class StarWarsRPG {
                     this.opponents.push(this.characters[i]);
                 }
             }
-            this.setScene($("#choose-opponent-scene"), "opponent-scene")
-        } else if (this.scene[0] === chooseOpponentScene[0]) {
+            this.setScene("choose-opponent-scene");
+        } else if (this.scene[0] === $("#choose-opponent-scene")[0]) {
             // Choose an opponent to play
             for (let i = 0; i < this.characters.length; i++) {
                 if (name === this.characters[i].name) {
                     this.currentOpponent = this.characters[i];
                 }
             }
-            this.setScene($("#fight-scene"), "fight-scene");
+            this.setScene("fight-scene");
         }
     }
 
+    // Handlse the function of your character attacking the current opponent
     attack() {
         this.currentOpponent.hp -= this.player.attack;
         this.player.attack += this.player.counterAttack;
@@ -166,22 +182,23 @@ class StarWarsRPG {
             alert("Killed each other");
             this.currentOpponent.alive = false;
             this.player.alive = false;
-            this.setScene($("#win-lose-scene"), "win-lose-scene");
+            this.setScene("win-lose-scene");
         } else if (this.currentOpponent.hp <= 0) {
             alert(`You killed ${this.currentOpponent.name}`);
             this.currentOpponent.alive = false;
-            this.setScene($("#choose-opponent-scene"), "opponent-scene");
+            this.setScene("choose-opponent-scene");
         } else if (this.currentOpponent.hp >= 0 && this.player.hp <= 0) {
             alert(`${this.currentOpponent.name} killed you`);
             this.player.alive = false;
-            this.setScene($("#win-lose-scene"), "win-lose-scene");
+            this.setScene("win-lose-scene");
         } else {
-            this.setScene($("#fight-scene"), "fight-scene");
+            this.setScene("fight-scene");
         }
     }
 
+    // Initiates a new game
     newGame() {
-        this.setScene($("#choose-character-scene"), "choose-scene");
+        this.setScene("start-scene");
         this.characters = [this.darthMaul, this.hanSolo, this.yoda, this.palpatine];
         this.opponents = [];
     }
@@ -190,7 +207,3 @@ class StarWarsRPG {
 
 
 let game = new StarWarsRPG();
-document.onclick = function () {
-    game.newGame();
-    document.onclick = function () {}
-}
