@@ -100,7 +100,7 @@ class StarWarsRPG {
                     }
                 }
             } else {
-                alert("You won!");
+                this.setScene("win-lose-scene")
             }
         }
 
@@ -165,14 +165,11 @@ class StarWarsRPG {
     attack() {
         this.currentOpponent.hp -= this.player.attack;
         this.player.attack += this.player.counterAttack;
-        this.player.hp -= this.currentOpponent.counterAttack;
+        if (this.currentOpponent.hp > 0) {
+            this.player.hp -= this.currentOpponent.counterAttack;
+        }
 
-        if (this.currentOpponent.hp <= 0 && this.player.hp <= 0) {
-            alert("Killed each other");
-            this.currentOpponent.alive = false;
-            this.player.alive = false;
-            this.setScene("win-lose-scene");
-        } else if (this.currentOpponent.hp <= 0) {
+        if (this.currentOpponent.hp <= 0 && this.player.hp >= 0) {
             alert(`You killed ${this.currentOpponent.name}`);
             this.currentOpponent.alive = false;
             this.setScene("choose-opponent-scene");
