@@ -27,6 +27,8 @@ body {
 
 .fight {
     background-image: url("../images/fight-background.jpg") !important;
+    background-size: 100vw auto;
+
 }
 
 @media screen and (min-width: 992px) {
