@@ -1,0 +1,35 @@
+body {
+    background-image: url("../images/background-image.jpg");
+    background-repeat: no-repeat;
+    background-size: auto 100vh;
+}
+
+.play-text {
+    padding: 45vh 0;
+    font-size: 4rem;
+    text-align: center;
+    color: yellow;
+}
+
+.scroll-text {
+    font-size: 2rem;
+    text-align: center;
+    color: yellow;
+    bottom: -175vh;
+    position: absolute;
+
+}
+
+.stars {
+    background-image: url("../images/background-image.jpg") !important;
+}
+
+.fight {
+    background-image: url("../images/fight-background.jpg") !important;
+}
+
+@media screen and (min-width: 992px) {
+    body {
+        background-image: url("../images/initial-background.jpg");
+    }
+}
