@@ -1,7 +1,7 @@
 body {
     background-image: url("../images/background-image.jpg");
     background-repeat: no-repeat;
-    background-size: auto 100vh;
+    background-size: 100vw auto;
 }
 
 .play-text {
@@ -22,6 +22,7 @@ body {
 
 .stars {
     background-image: url("../images/background-image.jpg") !important;
+    background-size: 100vw auto;
 }
 
 .fight {
@@ -31,5 +32,6 @@ body {
 @media screen and (min-width: 992px) {
     body {
         background-image: url("../images/initial-background.jpg");
+        background-size: auto 100vh;
     }
 }
