@@ -14,10 +14,10 @@ class Character {
         let id = this.name.replace(/\s+/g, '');
         id = id.toLowerCase();
         var locationDiv = $(`#${sceneName}`)
-        locationDiv.append(`<div class="card" style="width: 18rem; display: inline-block; margin: 1rem;" id="${id}-card-${sceneName}"></div>`);
+        locationDiv.append(`<div class="card" style="border: none; width: 18rem; display: inline-block; margin: 1rem; background-color: transparent;" id="${id}-card-${sceneName}"></div>`);
         let newCard = $(`#${id}-card-${sceneName}`);
         newCard.append(`<img src="${this.picture}" class="card-img-top" alt="${this.name}" id="${id}-image-${sceneName}">`);
-        newCard.append(`<div class="card-body text-center" id="${id}-card-body-${sceneName}"></div>`);
+        newCard.append(`<div class="card-body text-center" style="background-color: white;" id="${id}-card-body-${sceneName}"></div>`);
         let cardBody = $(`#${id}-card-body-${sceneName}`);
         cardBody.append(`<h5 class="card-title" style="font-size: 1.5rem;">${this.name}</h5>`);
         cardBody.append(`<h3 class="card-title d-none" id="${id}-card-hp-${sceneName}">Health: ${this.hp}</h3>`);
@@ -28,11 +28,6 @@ class Character {
 
 class StarWarsRPG {
     constructor() {
-        this.darthMaul = new Character("Darth Maul", "Besides his tremendous combat prowess, he is also a sinister schemer (taken from his time training with his master Darth Sidious). He also likes messing with people’s minds", 100, 18, 18, "assets/images/darth-maul.jpg");
-        this.hanSolo = new Character("Han Solo", "The thing is, Han Solo isn’t a simple smuggler, he is an awesome space cowboy with wits, skills, his charming smile, and an awesome spaceship.", 120, 20, 20, "assets/images/han-solo.png");
-        this.yoda = new Character("Master Yoda", "Yoda isn’t simply an old, short? (well, at least compares to human’s standard), green-skin goblin-like being. He is probably the most powerful Jedi ever lived and also a great mentor. ", 90, 24, 24, "assets/images/yoda.jpg");
-        this.palpatine = new Character("Emperor Palpatine", "Originally, he was the Senator Sheev Palpatine, a “simple” politician of Naboo. Yet, no one knew that such a “simple” politician was actually a Sith Lord Darth Sidious, a true terrific figure and the true master of the Dark Side.", 115, 22, 22, "assets/images/emperor-palpatine.jpg");
-        this.characters = [this.darthMaul, this.hanSolo, this.yoda, this.palpatine];
         this.player;
         this.opponents = [];
         this.currentOpponent;
@@ -47,7 +42,7 @@ class StarWarsRPG {
         $('body').append(`<div style="text-align: center;" id="${sceneName}"></div>`);
         this.scene = $(`#${sceneName}`);
 
-        // Set sthe stat scene
+        // Set sthe start scene
         if (sceneName === "start-scene") {
             $('body').removeAttr("class", "fight")
             $('body').removeAttr("class", "stars")
@@ -101,7 +96,7 @@ class StarWarsRPG {
                     if (this.opponents[i].alive === true) {
                         this.opponents[i].makeCard(sceneName);
                         let opponentID = this.opponents[i].name.replace(/\s+/g, '').toLowerCase();
-                        $(`#${opponentID}-card-button-${sceneName}`).text("Fight");
+                        $(`#${opponentID}-card-button-${sceneName}`).text(`Fight ${this.opponents[i].name}`);
                     }
                 }
             } else {
@@ -127,15 +122,14 @@ class StarWarsRPG {
         // Set the sceen to win/lose
         if (sceneName === "win-lose-scene") {
             $('body').removeAttr("class", "fight")
-            $('body').removeAttr("class", "stars")
+            $('body').attr("class", "stars")
             if (this.player.alive === true) {
                 // Display victory video
-                alert("victory video");
+                alert("win video")
             } else {
                 // Display loss video
                 alert("loss video");
             }
-            $(`#${sceneName}`).append(`<h1 class="play-text">Press N for new game<h1>`)
             game.newGame()
         }
     }
@@ -194,6 +188,10 @@ class StarWarsRPG {
     // Initiates a new game
     newGame() {
         this.setScene("start-scene");
+        this.darthMaul = new Character("Darth Maul", "Besides his tremendous combat prowess, he is also a sinister schemer (taken from his time training with his master Darth Sidious). He also likes messing with people’s minds", 100, 18, 18, "assets/images/darth-maul.png");
+        this.hanSolo = new Character("Han Solo", "The thing is, Han Solo isn’t a simple smuggler, he is an awesome space cowboy with wits, skills, his charming smile, and an awesome spaceship.", 120, 20, 20, "assets/images/han-solo.png");
+        this.yoda = new Character("Master Yoda", "Yoda isn’t simply an old, short? (well, at least compares to human’s standard), green-skin goblin-like being. He is probably the most powerful Jedi ever lived and also a great mentor. ", 90, 24, 24, "assets/images/yoda.png");
+        this.palpatine = new Character("Emperor Palpatine", "Originally, he was the Senator Sheev Palpatine, a “simple” politician of Naboo. Yet, no one knew that such a “simple” politician was actually a Sith Lord Darth Sidious, a true terrific figure and the true master of the Dark Side.", 115, 22, 22, "assets/images/emperor-palpatine.png");
         this.characters = [this.darthMaul, this.hanSolo, this.yoda, this.palpatine];
         this.opponents = [];
     }
