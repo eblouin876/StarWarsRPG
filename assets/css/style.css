@@ -1,7 +1,7 @@
 body {
     background-image: url("../images/background-image.jpg");
-    background-repeat: no-repeat;
     background-size: 100vw auto;
+    background-repeat: repeat-y;
 }
 
 .play-text {
@@ -20,20 +20,30 @@ body {
 
 }
 
+.title-text {
+    font-size: 4rem;
+    color: white;
+    text-align: center;
+}
+
 .stars {
     background-image: url("../images/background-image.jpg") !important;
     background-size: 100vw auto;
+    background-repeat: repeat-y;
 }
 
 .fight {
     background-image: url("../images/fight-background.jpg") !important;
     background-size: 100vw auto;
-
+    background-repeat: no-repeat;
 }
+
+
 
 @media screen and (min-width: 992px) {
     body {
         background-image: url("../images/initial-background.jpg");
         background-size: auto 100vh;
+        background-repeat: no-repeat;
     }
 }

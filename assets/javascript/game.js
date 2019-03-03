@@ -44,7 +44,7 @@ class StarWarsRPG {
     // Initiates the scene
     setScene(sceneName) {
         $('body').empty();
-        $('body').append(`<div class='container'><div class='row'><div class="col-12" id="${sceneName}"></div></div></div>`);
+        $('body').append(`<div style="text-align: center;" id="${sceneName}"></div>`);
         this.scene = $(`#${sceneName}`);
 
         // Set sthe stat scene
@@ -70,8 +70,8 @@ class StarWarsRPG {
             </p>`)
             $("audio").trigger('play')
             $(`#${sceneName}-text`).animate({
-                bottom: 0
-            }, 25000, function () {
+                bottom: 1000
+            }, 2500, function () {
                 game.setScene("choose-character-scene")
             })
 
@@ -79,8 +79,8 @@ class StarWarsRPG {
         // Set the scene to choose a character
         if (sceneName === "choose-character-scene") {
             $('body').attr("class", "stars")
+            $('body').prepend("<h1 class='title-text'>Choose a character to play</h1>")
             for (let i = 0; i < this.characters.length; i++) {
-                $(`#${sceneName}`).append(`<div class='row'><div class='col-12' id='${sceneName}'></div></div>`)
                 this.characters[i].makeCard(sceneName);
             }
         }
@@ -88,6 +88,7 @@ class StarWarsRPG {
 
         // Set the scene to choose an opponent
         if (sceneName === "choose-opponent-scene") {
+            $('body').prepend("<h1 class='title-text'>Choose an opponent to fight</h1>")
             $('body').attr("class", "stars")
             let livingEnemies = [];
             this.opponents.forEach(function (opponent) {
