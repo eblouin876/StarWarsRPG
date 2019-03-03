@@ -38,7 +38,6 @@ class StarWarsRPG {
         this.currentOpponent;
         this.scene;
         this.newGame();
-
     }
 
 
@@ -61,6 +60,7 @@ class StarWarsRPG {
         // Set the intro scene
         if (sceneName === "intro-scene") {
             $('body').attr("class", "stars")
+            $('body').append(`<audio controls preload="none" style="display: none;" id="audio"> <source src="assets/audio/theme.mp3" type="audio/mpeg"></audio>`)
             this.scene.append(`<p class="scroll-text" id="${sceneName}-text">Welcome to the game. Instructions and story go here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin fringilla finibus lobortis. Vestibulum gravida nibh eget ante euismod gravida. Morbi at nibh volutpat, vulputate felis ut, maximus ipsum. Mauris lorem diam, ullamcorper et purus a, accumsan feugiat lacus. Sed et nunc venenatis turpis consectetur hendrerit ac ac augue. Suspendisse ornare risus ut mollis iaculis. Praesent ultricies sodales ante. Vivamus sem diam, consequat vitae lorem eu, fringilla pretium nibh.
 
             In scelerisque, nulla non egestas euismod, magna tellus condimentum lorem, nec blandit sem mauris et metus. Proin eu tempor odio, sed molestie lacus. Donec nec lacus sit amet justo finibus sagittis aliquam sed lorem. Nunc dui neque, cursus ac orci ut, fringilla mollis dolor. Pellentesque interdum iaculis lectus, eu rhoncus lacus mattis sed. Nullam sed lacinia lacus. Pellentesque vel ligula vitae tellus porta dignissim. Interdum et malesuada fames ac ante ipsum primis in faucibus.
@@ -68,11 +68,10 @@ class StarWarsRPG {
             Praesent elit felis, luctus at cursus eget, maximus id elit. Nunc a finibus sem, a pharetra libero. Sed viverra a sem a blandit. Donec nec sapien congue, egestas tellus eu, tristique tortor. Proin at erat quam. Curabitur laoreet sodales magna, non cursus enim sagittis quis. Nam bibendum ligula non pulvinar rhoncus. Maecenas sagittis consequat nisl ut ultricies.
             
             </p>`)
-            $('body').append(`<audio id="theme"><source src="../sounds/theme.ogg" type="audio/ogg"></audio>`)
-            $("#theme")[0].play()
+            $("audio").trigger('play')
             $(`#${sceneName}-text`).animate({
                 bottom: 0
-            }, 15000, function () {
+            }, 25000, function () {
                 game.setScene("choose-character-scene")
             })
 
