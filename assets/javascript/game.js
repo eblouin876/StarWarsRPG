@@ -14,7 +14,7 @@ class Character {
         let id = this.name.replace(/\s+/g, '');
         id = id.toLowerCase();
         var locationDiv = $(`#${sceneName}`)
-        locationDiv.append(`<div class="card" style="width: 18rem; float: left; margin: 1rem;" id="${id}-card-${sceneName}"></div>`);
+        locationDiv.append(`<div class="card" style="width: 18rem; display: inline-block; margin: 1rem;" id="${id}-card-${sceneName}"></div>`);
         let newCard = $(`#${id}-card-${sceneName}`);
         newCard.append(`<img src="${this.picture}" class="card-img-top" alt="${this.name}" id="${id}-image-${sceneName}">`);
         newCard.append(`<div class="card-body text-center" id="${id}-card-body-${sceneName}"></div>`);
@@ -136,12 +136,7 @@ class StarWarsRPG {
                 alert("loss video");
             }
             $(`#${sceneName}`).append(`<h1 class="play-text">Press N for new game<h1>`)
-            $(document).on("keyup", function (event) {
-                if (event.key.toLowerCase() === "n") {
-                    // Have to refer to it as game because that's what the DOM sees
-                    game.newGame()
-                }
-            })
+            game.newGame()
         }
     }
 

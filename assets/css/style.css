@@ -15,7 +15,7 @@ body {
     font-size: 2rem;
     text-align: center;
     color: yellow;
-    bottom: -175vh;
+    bottom: -300vh;
     position: absolute;
 
 }
@@ -33,9 +33,9 @@ body {
 }
 
 .fight {
-    background-image: url("../images/fight-background.jpg") !important;
+    background-image: url("../images/background-image.jpg") !important;
     background-size: 100vw auto;
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
 }
 
 
@@ -44,6 +44,21 @@ body {
     body {
         background-image: url("../images/initial-background.jpg");
         background-size: auto 100vh;
+        background-repeat: no-repeat;
+    }
+
+    .scroll-text {
+        font-size: 2rem;
+        text-align: center;
+        color: yellow;
+        bottom: -175vh;
+        position: absolute;
+
+    }
+
+    .fight {
+        background-image: url("../images/fight-background.jpg") !important;
+        background-size: 100vw auto;
         background-repeat: no-repeat;
     }
 }
