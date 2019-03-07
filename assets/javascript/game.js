@@ -1,6 +1,6 @@
 // Make a new character
 class Character {
-    constructor(name, story, hp, attack, counterAttack, picture) {
+    constructor(name, story, hp, attack, counterAttack, picture, sound) {
         this.name = name;
         this.story = story;
         this.hp = hp;
@@ -9,6 +9,7 @@ class Character {
         this.picture = picture;
         this.player = false;
         this.alive = true;
+        this.sound = sound;
     }
     makeCard(sceneName) {
         let id = this.name.replace(/\s+/g, '');
@@ -16,6 +17,7 @@ class Character {
         var locationDiv = $(`#${sceneName}`)
         locationDiv.append(`<div class="card" style="border: none; width: 18rem; display: inline-block; margin: 1rem; background-color: transparent;" id="${id}-card-${sceneName}"></div>`);
         let newCard = $(`#${id}-card-${sceneName}`);
+        newCard.append(`<audio controls preload="auto" style="display: none;" id="${id}-attack-sound"> <source src='${this.sound}' type="audio/mpeg"></audio>`)
         newCard.append(`<img src="${this.picture}" class="card-img-top" alt="${this.name}" id="${id}-image-${sceneName}">`);
         newCard.append(`<div class="card-body text-center" style="background-color: white;" id="${id}-card-body-${sceneName}"></div>`);
         let cardBody = $(`#${id}-card-body-${sceneName}`);
@@ -23,6 +25,12 @@ class Character {
         cardBody.append(`<h3 class="card-title d-none" id="${id}-card-hp-${sceneName}">Health: ${this.hp}</h3>`);
         cardBody.append(`<p class="card-text d-none d-md-block" style="margin: 1rem;">${this.story}</p>`);
         cardBody.append(`<button type="button" class="btn btn-danger" id="${id}-card-button-${sceneName}" onclick="game.chooseCharacter('${this.name}')">Play as ${this.name}</button>`);
+    }
+
+    attackSound() {
+        let id = this.name.replace(/\s+/g, '');
+        id = id.toLowerCase();
+        $(`#${id}-attack-sound`).trigger('play')
     }
 }
 
@@ -56,17 +64,11 @@ class StarWarsRPG {
         if (sceneName === "intro-scene") {
             $('body').attr("class", "stars")
             $('body').append(`<audio controls preload="none" style="display: none;" id="audio"> <source src="assets/audio/theme.mp3" type="audio/mpeg"></audio>`)
-            this.scene.append(`<p class="scroll-text" id="${sceneName}-text">Welcome to the game. Instructions and story go here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin fringilla finibus lobortis. Vestibulum gravida nibh eget ante euismod gravida. Morbi at nibh volutpat, vulputate felis ut, maximus ipsum. Mauris lorem diam, ullamcorper et purus a, accumsan feugiat lacus. Sed et nunc venenatis turpis consectetur hendrerit ac ac augue. Suspendisse ornare risus ut mollis iaculis. Praesent ultricies sodales ante. Vivamus sem diam, consequat vitae lorem eu, fringilla pretium nibh.
-
-            In scelerisque, nulla non egestas euismod, magna tellus condimentum lorem, nec blandit sem mauris et metus. Proin eu tempor odio, sed molestie lacus. Donec nec lacus sit amet justo finibus sagittis aliquam sed lorem. Nunc dui neque, cursus ac orci ut, fringilla mollis dolor. Pellentesque interdum iaculis lectus, eu rhoncus lacus mattis sed. Nullam sed lacinia lacus. Pellentesque vel ligula vitae tellus porta dignissim. Interdum et malesuada fames ac ante ipsum primis in faucibus.
-            
-            Praesent elit felis, luctus at cursus eget, maximus id elit. Nunc a finibus sem, a pharetra libero. Sed viverra a sem a blandit. Donec nec sapien congue, egestas tellus eu, tristique tortor. Proin at erat quam. Curabitur laoreet sodales magna, non cursus enim sagittis quis. Nam bibendum ligula non pulvinar rhoncus. Maecenas sagittis consequat nisl ut ultricies.
-            
-            </p>`)
+            this.scene.append(`<p class="scroll-text" id="${sceneName}-text">Welcome to Star Wars RPG. In this game you will choose one of the characters to play as. Each character has different strengths and weaknesses, so you must pick carefully. The power of attacks and counter attacks vary each time, but there is a small range that you can use to build your strategy. As your character defeats more enemies, their power grows. But be careful - there is no way for your character to recover their health! Once you choose your character, you will pick your first opopnent. To win the game, defeat all of your opponents. Good luck, and may the force be with you!</p>`)
             $("audio").trigger('play')
             $(`#${sceneName}-text`).animate({
                 bottom: 1000
-            }, 2500, function () {
+            }, 27000, function () {
                 game.setScene("choose-character-scene")
             })
 
@@ -125,12 +127,16 @@ class StarWarsRPG {
             $('body').attr("class", "stars")
             if (this.player.alive === true) {
                 // Display victory video
-                alert("win video")
+                $("body").empty()
+                $("body").append('<div class="row"><div class="col-12 text-center"><iframe style="width:100vw; height:100vh" src="https://www.youtube.com/embed/GlCFPo6YYbU?controls=0&amp;start=120&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>')
             } else {
                 // Display loss video
-                alert("loss video");
+                $("body").empty()
+                $("body").append('<div class="row"><div class="col-12 text-center"><iframe style="width:100vw; height:100vh" src="https://www.youtube.com/embed/FSWiMoO8zNE?controls=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>')
             }
-            game.newGame()
+            setTimeout(function () {
+                game.newGame()
+            }, 9000)
         }
     }
 
@@ -163,32 +169,41 @@ class StarWarsRPG {
 
     // Handlse the function of your character attacking the current opponent
     attack() {
-        this.currentOpponent.hp -= this.player.attack;
-        this.player.attack += this.player.counterAttack;
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        this.currentOpponent.hp -= getRandomInt(this.player.attack - 5, this.player.attack + 5)
+        this.player.attack += getRandomInt(this.player.counterAttack - 5, this.player.counterAttack + 5)
         if (this.currentOpponent.hp > 0) {
-            this.player.hp -= this.currentOpponent.counterAttack;
+            this.player.hp -= getRandomInt(this.currentOpponent.attack - 5, this.currentOpponent.attack + 5)
         }
 
         if (this.currentOpponent.hp <= 0 && this.player.hp >= 0) {
-            alert(`You killed ${this.currentOpponent.name}`);
             this.currentOpponent.alive = false;
             this.setScene("choose-opponent-scene");
+            this.player.attackSound()
+
         } else if (this.currentOpponent.hp >= 0 && this.player.hp <= 0) {
-            alert(`${this.currentOpponent.name} killed you`);
             this.player.alive = false;
             this.setScene("win-lose-scene");
+            this.player.attackSound()
+
         } else {
             this.setScene("fight-scene");
+            this.player.attackSound()
         }
     }
 
     // Initiates a new game
     newGame() {
         this.setScene("start-scene");
-        this.darthMaul = new Character("Darth Maul", "Besides his tremendous combat prowess, he is also a sinister schemer (taken from his time training with his master Darth Sidious). He also likes messing with people’s minds", 100, 18, 18, "assets/images/darth-maul.png");
-        this.hanSolo = new Character("Han Solo", "The thing is, Han Solo isn’t a simple smuggler, he is an awesome space cowboy with wits, skills, his charming smile, and an awesome spaceship.", 120, 20, 20, "assets/images/han-solo.png");
-        this.yoda = new Character("Master Yoda", "Yoda isn’t simply an old, short? (well, at least compares to human’s standard), green-skin goblin-like being. He is probably the most powerful Jedi ever lived and also a great mentor. ", 90, 24, 24, "assets/images/yoda.png");
-        this.palpatine = new Character("Emperor Palpatine", "Originally, he was the Senator Sheev Palpatine, a “simple” politician of Naboo. Yet, no one knew that such a “simple” politician was actually a Sith Lord Darth Sidious, a true terrific figure and the true master of the Dark Side.", 115, 22, 22, "assets/images/emperor-palpatine.png");
+        this.darthMaul = new Character("Darth Maul", "Besides his tremendous combat prowess, he is also a sinister schemer (taken from his time training with his master Darth Sidious). He also likes messing with people’s minds", 100, 16, 18, "assets/images/darth-maul.png", "assets/audio/jedi-sound.mp3");
+        this.hanSolo = new Character("Han Solo", "The thing is, Han Solo isn’t a simple smuggler, he is an awesome space cowboy with wits, skills, his charming smile, and an awesome spaceship.", 120, 15, 17, "assets/images/han-solo.png", "assets/audio/solo-sound.mp3");
+        this.yoda = new Character("Master Yoda", "Yoda isn’t simply an old, short? (well, at least compares to human’s standard), green-skin goblin-like being. He is probably the most powerful Jedi ever lived and also a great mentor. ", 90, 24, 24, "assets/images/yoda.png", "assets/audio/jedi-sound.mp3");
+        this.palpatine = new Character("Emperor Palpatine", "Originally, he was the Senator Sheev Palpatine, a “simple” politician of Naboo. Yet, no one knew that such a “simple” politician was actually a Sith Lord Darth Sidious, a true terrific figure and the true master of the Dark Side.", 110, 22, 22, "assets/images/emperor-palpatine.png", "assets/audio/jedi-sound.mp3");
         this.characters = [this.darthMaul, this.hanSolo, this.yoda, this.palpatine];
         this.opponents = [];
     }
